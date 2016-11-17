@@ -27,10 +27,9 @@ var actions = {
 //    help: function() {
 //      return this.name + " [options] <parent_project_name> <project_name_to_generate>";
 //    },
-    help: "[options] [command]",
+    help: "[options] <command> [action]",
     arg_params: "msg.match[1]",
     required_params: [
-      "msg.match[2]"
     ],
     request_message: "\"Requesting help \" + (msg.match[2] ? \"'\" + msg.match[2].trim() + \"'\" : \"\") + \" \" + (msg.match[3] ? \"'\" + msg.match[3].trim() + \"'\" : \"\") + \"...\"",
     process: function(robot, action, msg) {
