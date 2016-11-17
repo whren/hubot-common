@@ -20,7 +20,7 @@ var get_arg_params;
 var actions = {
   help: {
     name: "",
-    regexp: "*(\-\-[^ ]+ )*([^\-].+)*( [^\-].+)*$",
+    regexp: "*(\-\-[^ ]+ )*([^\-][^ ]+)?( [^\-].+)?$",
 //
 // Use function to allow use of this.properties
 //
