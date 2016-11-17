@@ -20,7 +20,7 @@ var get_arg_params;
 var actions = {
   help: {
     name: "",
-    regexp: "*(\-\-[^ ]+ )*([^\-].+)*$",
+    regexp: "*(\-\-[^ ]+ )*([^\-].+)*( [^\-].+)*$",
 //
 // Use function to allow use of this.properties
 //
@@ -30,8 +30,9 @@ var actions = {
     help: "[options] [command]",
     arg_params: "msg.match[1]",
     required_params: [
+      "msg.match[2]"
     ],
-    request_message: "\"Requesting help \" + (msg.match[2] ? \"'\" + msg.match[2].trim() + \"'\" : \"\") + \"...\"",
+    request_message: "\"Requesting help \" + (msg.match[2] ? \"'\" + msg.match[2].trim() + \"'\" : \"\") + \" \" + (msg.match[3] ? \"'\" + msg.match[3].trim() + \"'\" : \"\") + \"...\"",
     process: function(robot, action, msg) {
       for (var i =0; i < action.required_params.length; i++) {
         var required_param = action.required_params[i];
@@ -46,7 +47,7 @@ var actions = {
 
       var arg_params = get_arg_params(eval(action.arg_params));
 
-      robot.emit('help:get', msg, (msg.match[2] ? msg.match[2].trim() : null));
+      robot.emit('help:get', msg, (msg.match[2] ? msg.match[2].trim() : null), (msg.match[3] ? msg.match[3].trim() : null));
     }
   }
 };
@@ -96,23 +97,33 @@ module.exports = function(robotAdapter) {
   }
 
   robot.on('help:get', function(msg, command, action_id) {
+    // a message is passed
     if (msg) {
+      // there is a command specified
       if (command) {
-        if (action_id) {
+        // command is this command name
+        if (command.toUpperCase() == command_name.toUpperCase()) {
+          // for each actions
           for (var key in actions) {
             if (actions.hasOwnProperty(key)) {
-              if (command.toUpperCase() == command_name.toUpperCase()
-                  && action_id.toUpperCase() === key.toUpperCase()) {
+              // either action is not specified or is equal to current iteration key
+              if (!action_id || (action_id && action_id.toUpperCase() === key.toUpperCase())) {
+                // send help message
                 msg.send(show_help(actions[key]));
-                break;
+                // action specified
+                if (action_id) {
+                  // stop
+                  break;
+                }
               }
             }
           }
-        } else {
-          var msg_txt = help_msg;
-
-          msg.send(msg_txt);
         }
+      } else {
+        // output full current command help
+        var msg_txt = help_msg;
+
+        msg.send(msg_txt);
       }
     }
   });
