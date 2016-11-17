@@ -107,7 +107,7 @@ module.exports = function(robotAdapter) {
             for (var key in actions) {
               if (actions.hasOwnProperty(key)) {
                 // action is is equal to current iteration key
-                if (action_id.toUpperCase() === key.toUpperCase())) {
+                if (action_id.toUpperCase() === key.toUpperCase()) {
                   // send help message
                   msg.send(show_help(actions[key]));
                   // stop
